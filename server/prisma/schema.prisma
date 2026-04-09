@@ -8,6 +8,7 @@ datasource db {
 
 model User {
   id       Int    @id @default(autoincrement())
-  pseudo   String
+  login    String
   campus   String
+  isAdmin  Boolean @default(false)
 }
