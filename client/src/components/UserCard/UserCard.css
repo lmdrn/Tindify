@@ -1,0 +1,37 @@
+/* src/components/UserCard/UserCard.css */
+
+.user-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0;
+    padding: 12px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    background-color: #ffffff;
+    transition: box-shadow 0.2s;
+  }
+  
+  .user-item:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  
+  .user-item span {
+    font-size: 1rem;
+    color: #333;
+  }
+  
+  .btn-delete {
+    background: #ffebee;
+    color: #ff1744;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 14px;
+    transition: background 0.2s;
+  }
+  
+  .btn-delete:hover {
+    background: #ffcdd2;
+  }

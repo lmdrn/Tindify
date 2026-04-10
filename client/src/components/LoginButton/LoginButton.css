@@ -1,0 +1,32 @@
+.btn-auth {
+    padding: 12px 25px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+  }
+  
+  .btn-auth:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+  
+  .btn-42 {
+    background: #00babc;
+    color: white;
+    border-radius: 8px;
+  }
+  
+  .btn-spotify {
+    background: #1DB954;
+    color: white;
+    border-radius: 25px;
+  }
+  
+  .badge-welcome {
+    font-size: 1.1rem;
+    color: #dfc7ff;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #ffffff;
+  }
