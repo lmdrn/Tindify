@@ -36,3 +36,39 @@
   list-style: none;
   padding: 0;
 }
+
+.btn-logout-small {
+  border: none;
+  font-size: 0.5rem;
+  margin-bottom: 10px;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 50px;
+  color: red;
+  background: none;
+  transition: background 0.2s;
+}
+
+.btn-logout-small:hover {
+  background: #f0f0f0;
+}
+
+.spotify-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: #1DB954;
+  font-weight: bold;
+}
+
+.btn-logout-spotify {
+  background: #ff4b4b;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.7rem;
+}

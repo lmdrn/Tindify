@@ -1,11 +1,12 @@
 import React from 'react';
 import './LoginButton.css';
 
-function LoginButton({ type, url, login }) {
+function LoginButton({ type, url, login, isAdmin }) {
   if (login) {
     return (
       <div className="badge-welcome">
         Hello, <strong>{login}</strong> !
+        {isAdmin && <span className="badge-admin">Admin</span>}
       </div>
     );
   }

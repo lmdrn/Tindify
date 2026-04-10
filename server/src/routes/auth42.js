@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const prisma = require('../db');
+const jwt = require('jsonwebtoken');
 
 const UID = process.env.UID_42;
 const SECRET = process.env.SECRET_42;
@@ -38,7 +39,9 @@ router.get('/42/callback', async (req, res) => {
         data: { login: userData.login, campus: userData.campus[0]?.name, isAdmin: isMe }
       });
     }
-    res.redirect(`http://localhost:5173?userId=${user.id}`);
+
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    res.redirect(`http://localhost:5173?token=${token}`);
   } catch (error) {
     res.status(500).send("Erreur Auth 42");
   }
