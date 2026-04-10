@@ -131,6 +131,7 @@ function App() {
             user={user} 
             showDelete={currentUser?.isAdmin && user.id !== currentUser.id}
             onDelete={handleDeleteUser}
+            currentUserId={currentUser?.id} 
           />
         ))}
       </ul>

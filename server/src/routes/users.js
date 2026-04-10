@@ -59,6 +59,13 @@ router.delete('/admin/delete-user/:id', authMiddleware, async (req, res) => {
   }
 });
 
+// --- ROUTE DE TEST : lier Spotify à un user existant ---
+router.get('/link-spotify/:id', async (req, res) => {
+    const { id } = req.params;
+    const token = jwt.sign({ userId: parseInt(id) }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    res.redirect(`http://localhost:5173?token=${token}`);
+});
+
 // --- TOP ARTISTS ---
 router.get('/:id/top-artists', async (req, res) => {
   const user = await prisma.user.findUnique({ where: { id: parseInt(req.params.id) } });
