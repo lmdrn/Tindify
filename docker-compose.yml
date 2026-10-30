@@ -5,6 +5,7 @@ services:
     env_file: .env
     environment:
       ORIGIN: https://${DOMAIN}
+      DATABASE_PATH: /data/tindify.db
     volumes:
       - tindify-data:/data
 
