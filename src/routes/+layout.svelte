@@ -30,6 +30,11 @@
 	let fontsReady = $state(false);
 
 	const isHome = $derived(page.route.id === '/');
+	// valeurs simples : les effets ne se relancent que si elles changent vraiment, pas à chaque navigation
+	const userId = $derived(data.user?.id ?? null);
+	const loveType = $derived(data.user?.loveType ?? null);
+	const skin = $derived((skinPreview.skin ?? data.user?.skin ?? 'none') as Skin);
+	const finish = $derived((skinPreview.finish ?? data.user?.finish ?? 'or') as Finish);
 
 	async function switchLang(e: MouseEvent, l: 'fr' | 'en') {
 		e.preventDefault();
@@ -53,6 +58,7 @@
 				reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches
 			});
 			pool = scene;
+			if (import.meta.env.DEV) (window as unknown as { __pool: PoolScene }).__pool = scene;
 		});
 		return () => {
 			disposed = true;
@@ -63,8 +69,8 @@
 
 	// le réseau dépend de la personne connectée (anonyme sinon)
 	$effect(() => {
-		void data.user?.id;
-		void data.user?.loveType;
+		void userId;
+		void loveType;
 		fetch('/api/network')
 			.then((r) => r.json())
 			.then((n: Network) => (network = n));
@@ -73,7 +79,7 @@
 		if (pool && network) pool.setNetwork(network);
 	});
 	$effect(() => {
-		pool?.setSkin(skinPreview.skin ?? ((data.user?.skin ?? 'none') as Skin), skinPreview.finish ?? ((data.user?.finish ?? 'or') as Finish));
+		pool?.setSkin(skin, finish);
 	});
 	$effect(() => {
 		pool?.setPanel(!isHome);

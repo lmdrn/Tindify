@@ -168,8 +168,9 @@ export class PoolScene {
 	private lastT = 0;
 	private introDone: boolean;
 	private panel = false;
-	private offX = 0;
-	private offY = 0;
+	private panelK = 0; // 0 = coeur centré, 1 = décalé pour laisser la place au panneau
+	private animT = 0; // temps d'animation : avance de dt borné, sans à-coup après un gel
+	private netKey = '';
 
 	constructor(
 		private canvas: HTMLCanvasElement,
@@ -618,10 +619,22 @@ export class PoolScene {
 	setPanel(open: boolean) {
 		this.panel = open;
 		if (open) this.select(-1);
+		// arrivée directe sur un panneau : pas de travelling d'intro ni de glissement, tout est déjà en place
+		if (this.readyAt < 0) {
+			this.panelK = open ? 1 : 0;
+			if (open) {
+				this.introDone = true;
+				this.camera.position.copy(this.introTo);
+			}
+		}
 	}
 
 	setNetwork(net: Network) {
+		// même réseau (mêmes personnes, mêmes fils) : on garde les objets 3D, seules les infos des fiches changent
+		const key = net.nodes.map((n) => `${n.id}${n.me ? '*' : ''}`).join(',') + '|' + net.links.join(';');
 		this.net = net;
+		if (key === this.netKey && this.nodes) return;
+		this.netKey = key;
 		this.selected = -1;
 		for (const o of [this.nodes, this.nodeEdges, this.links]) {
 			if (o) {
@@ -733,8 +746,12 @@ export class PoolScene {
 		this.raf = requestAnimationFrame(this.loop);
 		this.timer.update();
 		const t = this.timer.getElapsed();
+		const dt = Math.min(0.05, Math.max(0, t - this.lastT));
+		this.lastT = t;
+		this.animT += dt;
+		const at = this.animT;
 		const reduce = this.opts.reducedMotion;
-		this.uTime.value = t;
+		this.uTime.value = at;
 		const cam = this.camera;
 		if (!this.introDone) {
 			const k = this.readyAt < 0 ? 0 : Math.min(1, (t - this.readyAt) / 3.2), e = 1 - Math.pow(1 - k, 3);
@@ -743,23 +760,24 @@ export class PoolScene {
 		} else if (reduce && t < 0.1) cam.position.copy(this.introTo);
 
 		// battement uniquement au survol : boum-boum doux
-		const dt = Math.min(0.05, t - this.lastT);
-		this.lastT = t;
-		this.hoverK += ((this.hover ? 1 : 0) - this.hoverK) * 0.08;
+		this.hoverK += ((this.hover ? 1 : 0) - this.hoverK) * (1 - Math.exp(-dt * 5));
 		this.beatPh = (this.beatPh + dt / 1.25) % 1;
 		const ph = this.beatPh, amp = 1.1 * this.hoverK;
 		this.beatGroup.scale.setScalar(1 + amp * (0.035 * Math.exp(-(((ph - 0.12) / 0.07) ** 2)) + 0.022 * Math.exp(-(((ph - 0.34) / 0.08) ** 2))));
 		if (!reduce) {
-			this.heartRoot.rotation.y = t * 0.3;
-			this.heartRoot.position.y = HEART_Y + Math.sin(t * 0.6) * 0.06;
-			this.skinUpdates[this.skin]?.(t);
-			this.flick.color.setScalar(Math.sin(t * 17) > 0.2 && Math.sin(t * 1.3) > -0.7 ? 1 : 0.25);
+			this.heartRoot.rotation.y = at * 0.3;
+			this.heartRoot.position.y = HEART_Y + Math.sin(at * 0.6) * 0.06;
+			this.skinUpdates[this.skin]?.(at);
+			this.flick.color.setScalar(Math.sin(at * 17) > 0.2 && Math.sin(at * 1.3) > -0.7 ? 1 : 0.25);
 		}
 
 		const w = this.canvas.clientWidth, h = this.canvas.clientHeight, wide = w > 760;
-		this.offX += ((this.panel && wide ? -w * 0.2 : 0) - this.offX) * 0.06;
-		this.offY += ((this.panel && !wide ? h * 0.2 : 0) - this.offY) * 0.06;
-		if (Math.abs(this.offX) > 0.5 || Math.abs(this.offY) > 0.5) cam.setViewOffset(w, h, this.offX, this.offY, w, h);
+		// glissement à durée fixe (0,9 s, accéléré puis freiné), indépendant de la fréquence de l'écran
+		const step = reduce ? 1 : dt / 0.9;
+		this.panelK = this.panel ? Math.min(1, this.panelK + step) : Math.max(0, this.panelK - step);
+		const k = this.panelK, e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+		const offX = wide ? -w * 0.2 * e : 0, offY = wide ? 0 : h * 0.2 * e;
+		if (Math.abs(offX) > 0.5 || Math.abs(offY) > 0.5) cam.setViewOffset(w, h, offX, offY, w, h);
 		else if (cam.view) cam.clearViewOffset();
 
 		this.controls.update();

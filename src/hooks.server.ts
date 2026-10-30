@@ -6,11 +6,8 @@ export const handle: Handle = async ({ event, resolve }) => {
 	event.locals.user = readSession(event.cookies);
 
 	const cookieLang = event.cookies.get('lang');
-	event.locals.lang = isLang(cookieLang)
-		? cookieLang
-		: (event.request.headers.get('accept-language') ?? '').toLowerCase().startsWith('en')
-			? 'en'
-			: 'fr';
+	// français par défaut ; l'anglais seulement si la personne l'a choisi
+	event.locals.lang = isLang(cookieLang) ? cookieLang : 'fr';
 
 	const response = await resolve(event, {
 		transformPageChunk: ({ html }) => html.replace('%lang%', event.locals.lang)
