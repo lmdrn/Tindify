@@ -214,7 +214,13 @@ const en: Dict = {
 		server: { title: 'Pool closed for draining.', body: 'Something broke on our side. We are refilling it, try again in a moment.' },
 		back: 'Back to the pool'
 	},
-	sampleLegend: 'sample data'
+	sampleLegend: 'sample data',
+	onHold: {
+		sign: 'Notice to swimmers',
+		title: 'Project <span class="r">on hold</span> :(',
+		body: 'Unfortunately, Spotify no longer lets small projects use its API: only a handful of people can connect their account. You can still float around the pool.',
+		ok: 'Got it'
+	}
 };
 
 export default en;

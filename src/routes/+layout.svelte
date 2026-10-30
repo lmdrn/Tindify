@@ -17,6 +17,7 @@
 	import type { PoolScene } from '$lib/scene/pool';
 	import type { Finish, Network, NetworkNode, Skin } from '$lib/types';
 	import PersonCard from '$lib/components/PersonCard.svelte';
+	import OnHold from '$lib/components/OnHold.svelte';
 	import { skinPreview } from '$lib/preview.svelte';
 
 	let { data, children } = $props();
@@ -130,6 +131,8 @@
 
 {@render children()}
 </div>
+
+<OnHold {t} />
 
 <style>
 	.gl {

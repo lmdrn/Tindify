@@ -214,7 +214,13 @@ const fr = {
 		server: { title: 'Bassin fermé pour vidange.', body: 'Erreur de notre côté. On remet de l\'eau, réessaie dans un moment.' },
 		back: 'Retour au bassin'
 	},
-	sampleLegend: 'données d\'exemple'
+	sampleLegend: 'données d\'exemple',
+	onHold: {
+		sign: 'Avis aux nageur·ses',
+		title: 'Projet <span class="r">en pause</span> :(',
+		body: "Malheureusement, Spotify n'autorise plus les petits projets à utiliser son API : seule une poignée de personnes peut connecter son compte. Tu peux quand même te balader dans le bassin.",
+		ok: "D'accord"
+	}
 };
 
 export default fr;
